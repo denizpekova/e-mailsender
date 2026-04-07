@@ -2,11 +2,13 @@ using e_mailsender.Models;
 using e_mailsender.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace e_mailsender.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("EmailLimit")]
     public class EmailController : ControllerBase
     {
         private readonly IEmailQueue _emailQueue;

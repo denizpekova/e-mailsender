@@ -19,12 +19,19 @@ builder.Services.AddHostedService<EmailSenderWorker>();
 
 builder.Services.AddRateLimiter(options =>
 {
-    options.AddFixedWindowLimiter("EmailLimit", opt =>
+    options.AddPolicy("EmailLimit", httpContext =>
     {
-        opt.Window = TimeSpan.FromMinutes(1);
-        opt.PermitLimit = 5;
-        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 2;
+        var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: ipAddress,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                Window = TimeSpan.FromMinutes(1),
+                PermitLimit = 5,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 2
+            });
     });
 
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
