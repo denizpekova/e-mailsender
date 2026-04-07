@@ -1,0 +1,32 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.cs]
+indent_style = space
+indent_size = 4
+
+# Prefer var for readability consistency
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+
+# Braces and expression preferences
+csharp_prefer_braces = true:warning
+csharp_style_expression_bodied_methods = false:silent
+
+# Null checks and object initialization
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_object_initializer = true:suggestion
+
+# Usings
+dotnet_sort_system_directives_first = true
+file_header_template = unset
+
+# Keep current project naming style (e_mailsender)
+dotnet_diagnostic.CA1707.severity = none

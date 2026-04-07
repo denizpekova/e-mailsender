@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="e-mailsender.Tests/e-mailsender.Tests.csproj" />
   <Project Path="e-mailsender/e-mailsender.csproj" />
 </Solution>
