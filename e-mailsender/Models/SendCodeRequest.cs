@@ -4,6 +4,7 @@ namespace e_mailsender.Models
 {
     public class SendCodeRequest
     {
+        [Required(ErrorMessage = "SMTP ayarları zorunludur.")]
         public required SmtpSettings Smtp { get; set; }
 
 
@@ -20,10 +21,14 @@ namespace e_mailsender.Models
         [MaxLength(100, ErrorMessage = "Konu 100 karakterden uzun olamaz.")]
         public required string Subject { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Mail içeriği zorunludur.")]
+        [MinLength(1, ErrorMessage = "Mail içeriği boş olamaz.")]
         public required string Body { get; set; }
+
         public bool IsHtml { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Kod zorunludur.")]
+        [RegularExpression("^\\d{6}$", ErrorMessage = "Kod 6 haneli sayısal olmalıdır.")]
         public required string Code { get; set; }
     }
 }

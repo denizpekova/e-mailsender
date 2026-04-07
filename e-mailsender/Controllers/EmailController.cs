@@ -19,10 +19,6 @@ namespace e_mailsender.Controllers
         [HttpPost]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid request.");
-            }
             try
             {
 
@@ -39,10 +35,6 @@ namespace e_mailsender.Controllers
         [HttpPost]
         public async Task<IActionResult> SendEmailToCode([FromBody] SendCodeRequest request)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid request.");
-            }
             try
             {
                 await _emailService.SendEmailAsyncToCode(request);
