@@ -19,31 +19,18 @@ namespace e_mailsender.Controllers
         [HttpPost]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailRequest request)
         {
-            try
-            {
-
                 await _emailService.SendEmailAsync(request);
-                return Ok("Email sent successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
-            }
+                return Ok("Email sent successfully.");        
         }
 
         [Route("send-code")]
         [HttpPost]
         public async Task<IActionResult> SendEmailToCode([FromBody] SendCodeRequest request)
         {
-            try
-            {
-                await _emailService.SendEmailAsyncToCode(request);
-                return Ok("Email sent successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
-            }
+   
+               await _emailService.SendEmailAsyncToCode(request);
+               return Ok("Email sent successfully.");
+           
         }
     }
 }
