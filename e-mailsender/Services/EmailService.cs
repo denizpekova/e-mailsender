@@ -1,6 +1,7 @@
-using System.Net;
-using System.Net.Mail;
 using e_mailsender.Models;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
 
 namespace e_mailsender.Services
 {
@@ -20,18 +21,8 @@ namespace e_mailsender.Services
                 return;
             }
 
-            using SmtpClient client = new SmtpClient(request.Smtp.Host, request.Smtp.Port)
-            {
-                Credentials = new NetworkCredential(request.Smtp.Username, request.Smtp.Password),
-                EnableSsl = request.Smtp.EnableSsl
-            };
-
-            using MailMessage mail = new MailMessage(request.From, request.To, request.Subject, request.Body)
-            {
-                IsBodyHtml = request.IsHtml
-            };
-
-            await client.SendMailAsync(mail);
+            var message = CreateMessage(request.From, request.To, request.Subject, request.Body, request.IsHtml);
+            await SendWithMailKitAsync(message, request.Smtp.Host, request.Smtp.Port, request.Smtp.Username, request.Smtp.Password, request.Smtp.EnableSsl);
         }
 
 
@@ -46,18 +37,44 @@ namespace e_mailsender.Services
                 ? $"{request.Body}<br/><br/><strong>Code: {request.Code}</strong>"
                 : $"{request.Body}{Environment.NewLine}{Environment.NewLine}Code: {request.Code}";
 
-            using SmtpClient client = new SmtpClient(request.Smtp.Host, request.Smtp.Port)
+            var message = CreateMessage(request.From, request.To, request.Subject, bodyWithCode, request.IsHtml);
+            await SendWithMailKitAsync(message, request.Smtp.Host, request.Smtp.Port, request.Smtp.Username, request.Smtp.Password, request.Smtp.EnableSsl);
+        }
+
+        private static MimeMessage CreateMessage(string from, string to, string subject, string body, bool isHtml)
+        {
+            var message = new MimeMessage();
+            message.From.Add(MailboxAddress.Parse(from));
+            message.To.Add(MailboxAddress.Parse(to));
+            message.Subject = subject;
+            message.Body = new TextPart(isHtml ? "html" : "plain")
             {
-                Credentials = new NetworkCredential(request.Smtp.Username, request.Smtp.Password),
-                EnableSsl = request.Smtp.EnableSsl
+                Text = body
             };
 
-            using MailMessage mail = new MailMessage(request.From, request.To, request.Subject, bodyWithCode)
+            return message;
+        }
+
+        private static async Task SendWithMailKitAsync(
+            MimeMessage message,
+            string host,
+            int port,
+            string username,
+            string password,
+            bool enableSsl)
+        {
+            var socketOption = port switch
             {
-                IsBodyHtml = request.IsHtml
+                465 => SecureSocketOptions.SslOnConnect,
+                587 => SecureSocketOptions.StartTls,
+                _ => enableSsl ? SecureSocketOptions.Auto : SecureSocketOptions.None
             };
 
-            await client.SendMailAsync(mail);
+            using var client = new SmtpClient();
+            await client.ConnectAsync(host, port, socketOption);
+            await client.AuthenticateAsync(username, password);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
         }
     }
 }
