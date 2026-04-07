@@ -23,7 +23,7 @@ A RESTful Web API built with **C# ASP.NET Core** that allows users to send email
 |---------------|-----------------------------|
 | Language      | C# (.NET 10)                |
 | Framework     | ASP.NET Core Web API        |
-| Email Library | System.Net.Mail             |
+| Email Library | MailKit / MimeKit           |
 | Documentation | Swagger (Swashbuckle)       |
 
 ---
@@ -59,6 +59,8 @@ e-mailsender/
 
 ## 🏃 Running the Application
 
+### Option 1: Using .NET CLI
+
 ```bash
 # Restore dependencies
 dotnet restore
@@ -69,6 +71,18 @@ dotnet run
 
 The API will be available at: `https://localhost:5001`  
 Swagger UI: `https://localhost:5001/swagger`
+
+### Option 2: Using Docker (Recommended)
+
+You can easily spin up the API using Docker Compose without needing the .NET SDK installed.
+
+```bash
+# Build and start the container in detached mode
+docker compose up -d --build
+```
+
+The API will be available at: `http://localhost:8080`  
+Swagger UI: `http://localhost:8080/swagger`
 
 ---
 
