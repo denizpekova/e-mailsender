@@ -8,8 +8,11 @@ A RESTful Web API built with **C# ASP.NET Core** that allows users to send email
 
 - Send emails using **caller-supplied SMTP credentials** (no server-side config required)
 - Support for **plain-text and HTML** email bodies
-- **Verification / OTP code sending** — caller provides the code to be sent
+- **Verification / OTP code sending** — appends the code to your supplied text/HTML body
+- **Asynchronous Processing** — requests are handled via a background queue (`EmailSenderWorker`)
+- **Rate Limiting** — built-in API rate limiting (5 requests / minute)
 - Input validation for SMTP fields and email addresses
+- Global Error Handling via `GlobalExceptionHandler`
 - Swagger / OpenAPI documentation
 
 ---
@@ -20,7 +23,7 @@ A RESTful Web API built with **C# ASP.NET Core** that allows users to send email
 |---------------|-----------------------------|
 | Language      | C# (.NET 10)                |
 | Framework     | ASP.NET Core Web API        |
-| Email Library | MailKit / System.Net.Mail   |
+| Email Library | System.Net.Mail             |
 | Documentation | Swagger (Swashbuckle)       |
 
 ---
@@ -28,17 +31,21 @@ A RESTful Web API built with **C# ASP.NET Core** that allows users to send email
 ## 📁 Project Structure
 
 ```
-e-mailsenders/
+e-mailsender/
 ├── Controllers/
 │   └── EmailController.cs       # API endpoints
 ├── Models/
 │   ├── SendEmailRequest.cs      # Standard email request model
-│   └── SendCodeRequest.cs       # Code/OTP email request model
+│   ├── SendCodeRequest.cs       # Code/OTP email request model
+│   └── EmailQueueItem.cs        # Internal queue item structure
 ├── Services/
-│   └── EmailService.cs          # SMTP send logic
+│   ├── EmailService.cs          # SMTP send logic
+│   ├── IEmailQueue.cs           # Background queue interface
+│   └── EmailSenderWorker.cs     # Background service processor
 ├── appsettings.json
+├── GlobalExceptionHandler.cs    # Global error handling
 ├── Program.cs
-└── README.MD
+└── README.md
 ```
 
 ---
@@ -116,7 +123,7 @@ Sends an email using the SMTP credentials provided in the request body.
 
 | Status | Description                          |
 |--------|--------------------------------------|
-| `200`  | Email sent successfully              |
+| `200`  | Email queued successfully            |
 | `400`  | Validation error (missing/invalid fields) |
 | `500`  | SMTP connection or authentication failed |
 
@@ -141,25 +148,31 @@ Sends a verification code or OTP to the specified email address using caller-sup
   },
   "from": "your-email@gmail.com",
   "to": "recipient@example.com",
+  "subject": "Your Verification Code",
+  "body": "Your requested verification code is attached below.",
+  "isHtml": false,
   "code": "483920"
 }
 ```
 
 #### Code Fields
 
-| Field  | Type   | Required | Description                                           |
-|--------|--------|----------|-------------------------------------------------------|
-| `to`   | string | ✅       | Recipient email address                               |
-| `from` | string | ✅       | Sender email address                                  |
-| `code` | string | ✅       | The verification code / OTP to include in the email   |
+| Field     | Type    | Required | Description                                           |
+|-----------|---------|----------|-------------------------------------------------------|
+| `to`      | string  | ✅       | Recipient email address                               |
+| `from`    | string  | ✅       | Sender email address                                  |
+| `subject` | string  | ✅       | Subject line of the email                             |
+| `body`    | string  | ✅       | Body content of the email                             |
+| `isHtml`  | boolean | ❌       | Set `true` to send HTML body (default: `false`)       |
+| `code`    | string  | ✅       | The verification code / OTP (must be exactly 6 digits)|
 
-> The API wraps the provided `code` in a pre-built email template and sends it to the recipient.
+> The API appends the provided `code` to the end of your `body` text and sends it to the recipient.
 
 #### Responses
 
 | Status | Description                                 |
 |--------|---------------------------------------------|
-| `200`  | Code email sent successfully                |
+| `200`  | Code email queued successfully              |
 | `400`  | Validation error (missing/invalid fields)   |
 | `500`  | SMTP connection or authentication failed    |
 
