@@ -14,6 +14,9 @@ builder.Services.AddScoped<EmailService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddSingleton<IEmailQueue, EmailQueue>();
+builder.Services.AddHostedService<EmailSenderWorker>();
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("EmailLimit", opt =>
