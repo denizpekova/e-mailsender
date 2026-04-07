@@ -1,4 +1,4 @@
-# 📧 E-Mail Senders API
+# 📧 E-Mail Senders API (BETA)
 
 A RESTful Web API built with **C# ASP.NET Core** that allows users to send emails using their own SMTP credentials. All SMTP configuration and — when applicable — the email code/content are provided **per request** by the caller, so no server-side email credentials need to be stored.
 
