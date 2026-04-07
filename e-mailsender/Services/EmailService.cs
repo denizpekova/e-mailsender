@@ -36,13 +36,17 @@ namespace e_mailsender.Services
         {
             if (request == null) return;
 
+            var bodyWithCode = request.IsHtml
+                ? $"{request.Body}<br/><br/><strong>Code: {request.Code}</strong>"
+                : $"{request.Body}{Environment.NewLine}{Environment.NewLine}Code: {request.Code}";
+
             using SmtpClient client = new SmtpClient(request.Smtp.Host, request.Smtp.Port)
             {
                 Credentials = new NetworkCredential(request.Smtp.Username, request.Smtp.Password),
                 EnableSsl = request.Smtp.EnableSsl
             };
 
-            using MailMessage mail = new MailMessage(request.From, request.To, request.Subject, request.Body)
+            using MailMessage mail = new MailMessage(request.From, request.To, request.Subject, bodyWithCode)
             {
                 IsBodyHtml = request.IsHtml
             };
