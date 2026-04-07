@@ -1,4 +1,4 @@
-﻿namespace e_mailsender.Tests;
+namespace e_mailsender.Tests;
 
 public class UnitTest1
 {

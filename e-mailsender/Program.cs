@@ -1,6 +1,6 @@
+using System.Threading.RateLimiting;
 using e_mailsender.Services;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +21,8 @@ builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("EmailLimit", opt =>
     {
-        opt.Window = TimeSpan.FromMinutes(1); 
-        opt.PermitLimit = 5; 
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.PermitLimit = 5;
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         opt.QueueLimit = 2;
     });

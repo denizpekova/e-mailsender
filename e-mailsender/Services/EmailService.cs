@@ -1,6 +1,6 @@
-﻿using e_mailsender.Models;
 using System.Net;
 using System.Net.Mail;
+using e_mailsender.Models;
 
 namespace e_mailsender.Services
 {
@@ -15,7 +15,10 @@ namespace e_mailsender.Services
 
         public async Task SendEmailAsync(SendEmailRequest request)
         {
-            if (request == null) return;
+            if (request == null)
+            {
+                return;
+            }
 
             using SmtpClient client = new SmtpClient(request.Smtp.Host, request.Smtp.Port)
             {
@@ -34,7 +37,10 @@ namespace e_mailsender.Services
 
         public async Task SendEmailAsyncToCode(SendCodeRequest request)
         {
-            if (request == null) return;
+            if (request == null)
+            {
+                return;
+            }
 
             var bodyWithCode = request.IsHtml
                 ? $"{request.Body}<br/><br/><strong>Code: {request.Code}</strong>"

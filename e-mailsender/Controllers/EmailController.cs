@@ -1,4 +1,4 @@
-﻿using e_mailsender.Models;
+using e_mailsender.Models;
 using e_mailsender.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

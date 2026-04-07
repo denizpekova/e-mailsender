@@ -1,4 +1,4 @@
-﻿using e_mailsender.Models;
+using e_mailsender.Models;
 
 namespace e_mailsender.Services
 {

@@ -1,4 +1,4 @@
-﻿namespace e_mailsender.Models
+namespace e_mailsender.Models
 {
     public class EmailQueueItem
     {
