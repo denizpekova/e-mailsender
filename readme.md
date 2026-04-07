@@ -18,7 +18,7 @@ A RESTful Web API built with **C# ASP.NET Core** that allows users to send email
 
 | Layer         | Technology                  |
 |---------------|-----------------------------|
-| Language      | C# (.NET 8)                 |
+| Language      | C# (.NET 10)                |
 | Framework     | ASP.NET Core Web API        |
 | Email Library | MailKit / System.Net.Mail   |
 | Documentation | Swagger (Swashbuckle)       |
@@ -45,7 +45,7 @@ e-mailsenders/
 
 ## ⚙️ Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 - A valid SMTP server (e.g. Gmail, Outlook, custom SMTP)
 
 ---
@@ -227,4 +227,4 @@ Contributions are welcome! Please open an issue first to discuss what you'd like
 
 ## 📧 Contact
 
-For questions or support, please open an [issue](https://github.com/denizpekova/e-mailsenders/issues).
+For questions or support, please open an [issue](https://github.com/denizpekova/e-mailsender/issues).
