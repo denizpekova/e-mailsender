@@ -34,5 +34,24 @@ namespace e_mailsender.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
             }
         }
+
+        [Route("send-code")]
+        [HttpPost]
+        public async Task<IActionResult> SendEmailToCode([FromBody] SendCodeRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request.");
+            }
+            try
+            {
+                await _emailService.SendEmailAsyncToCode(request);
+                return Ok("Email sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error sending email: {ex.Message}");
+            }
+        }
     }
 }
