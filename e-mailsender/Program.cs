@@ -39,9 +39,7 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
-// Required when hosting under a sub-path (e.g. /app/mailsender) in IIS/Plesk
-app.UsePathBase("/app/mailsender");
-app.UseRouting();
+
 
 app.UseRateLimiter();
 app.UseExceptionHandler();
